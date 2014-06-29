@@ -27,15 +27,15 @@ tags.
     $ mkdir TaxDocs
     $ cp ~/tax*.pdf TaxDocs/
     $ camtagger add archive,important,doc -- TaxDocs/*
-    /mnt/camli/root/Backup/TaxDocs/tax-2013.pdf +archive +important +doc
-    /mnt/camli/root/Backup/TaxDocs/tax-2014.pdf +archive +important +doc
+    /mnt/camli/root/Backup/TaxDocs/tax-2013.pdf sha1-xxx... +archive +important +doc
+    /mnt/camli/root/Backup/TaxDocs/tax-2014.pdf sha1-xxx... +archive +important +doc
     ...
 
 Time has moved on, we no longer pay taxes...
 
     $ camtagger del important -- /mnt/camli/root/Backup/TaxDocs/*
-    /mnt/camli/root/Backup/TaxDocs/tax-2013.pdf -important
-    /mnt/camli/root/Backup/TaxDocs/tax-2014.pdf -important
+    /mnt/camli/root/Backup/TaxDocs/tax-2013.pdf sha1-xxx... -important
+    /mnt/camli/root/Backup/TaxDocs/tax-2014.pdf sha1-xxx... -important
     ...
 
 ## Bugs
