@@ -15,6 +15,7 @@ import (
 	"sync"
 
 	"camlistore.org/pkg/blob"
+	"camlistore.org/pkg/cacher"
 	"camlistore.org/pkg/client"
 	"camlistore.org/pkg/schema"
 	"camlistore.org/pkg/search"
@@ -26,12 +27,13 @@ const (
 )
 
 var (
-	nwork = flag.Int("workers", 1, "number of parallel workers")
-	cl    *client.Client
-	wg    sync.WaitGroup
-	args  chan string
-	tags  []string
-	mode  int
+	flgWorkers = flag.Int("workers", 1, "number of parallel workers")
+	flgCache   = flag.Bool("cache", false, "use disk cache fetcher")
+	cl         *client.Client
+	wg         sync.WaitGroup
+	args       chan string
+	tags       []string
+	mode       int
 )
 
 func main() {
@@ -68,9 +70,18 @@ func main() {
 	tr := cl.TransportForConfig(&client.TransportConfig{})
 	cl.SetHTTPClient(&http.Client{Transport: tr})
 
+	// disk cache fetcher
+	if *flgCache {
+		dcf, err := cacher.NewDiskCache(cl)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "CACHER: %v\n", err)
+		}
+		defer dcf.Clean()
+	}
+
 	args = make(chan string)
 
-	for i := 0; i < *nwork; i++ {
+	for i := 0; i < *flgWorkers; i++ {
 		wg.Add(1)
 		go worker()
 	}
